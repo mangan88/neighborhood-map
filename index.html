@@ -5,10 +5,8 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
-	<!--<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAc52EIkHNkfufX9x6ZW2iIv6KD83WZuh4"> </script> 
-	
-	<script src="js/google-maps.js"> </script> -->
-		
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+	<!--Google Map - load after page is loaded -->
 	<script>
 		function initialize() {
 			var mapOptions = {
@@ -31,9 +29,30 @@
 	</script>
 </head>
 <body>
-	<div id="map-canvas">
-		
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12 text-right">
+				<h1>Neighborhood Map</h1>
+			</div>
+		</div>
+		<div class="row" id="maprow">
+			<div class="col-md-4">
+			<h2>Searchbox Placeholder</h2>
+			<h2>Markers Placeholder</h2>
+				<ul>
+					<li>Marker 1</li>
+					<li>Marker 2</li>
+					<li>Marker 3</li>
+				</ul>
+			</div>
+			<div class="col-md-8 map-container">
+				<div id="map-canvas">
+				</div>
+			</div>
+			</div>
+		</div>
 	</div>
+	
 </body>
 
 
