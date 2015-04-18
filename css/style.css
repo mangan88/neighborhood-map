@@ -1,9 +1,13 @@
-html, body, .container, #maprow, #maprow.col-md-8 {
+html, body, .container {
 	height: 100%;
 }
 
+#maprow, #maprow.col-md-8 {
+	height: 50%;
+}
+
 .map-container {
-	height: 60%;
+	height: 100%;
 	position: relative;
 }
 
