@@ -7,8 +7,10 @@
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
 
+	
 	<script type="text/javascript" src="js/jquery-2.1.3.min.js"></script>
 	<script type="text/javascript" src="js/knockout-3.3.0.js"></script>
+	<!--TODO: Optimize all .js calls, but especially google maps -->
 	
 	<!--TODO: Add additional APIs -->
 
@@ -17,26 +19,33 @@
 	<!--Google Map - load after page is loaded -->
 	<!--TODO: Settle on a neighborhood -->
 	<!--TODO: Add markers for key locations -->
-	<script>
+	<!--<script>
 		function initialize() {
+			var myLatlng = new google.maps.LatLng(37.97564, -100.850363);
 			var mapOptions = {
 		  		zoom: 17,
-				center: new google.maps.LatLng(37.969451, -100.836252)
+				center: myLatlng
 			};
 
 			var map = new google.maps.Map(document.getElementById('map-canvas'),
 		    	mapOptions);
-			}
-
+			
+			var marker = new google.maps.Marker({
+			    position: myLatlng,
+			    map: map,
+			    title: 'Hello World!'
+			});
+		};
 		function loadScript() {
 			var script = document.createElement('script');
 			script.type = 'text/javascript';
 			script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp' + '&signed_in=true&callback=initialize';
 			document.body.appendChild(script);
 		}
+	
 
 		window.onload = loadScript;
-	</script>
+	</script> -->
 </head>
 <body>
 	<div class="container">
@@ -47,9 +56,11 @@
 		</div>
 		<div class="row" id="maprow">
 			<div class="col-md-4">
-				<h2>Searchbox Placeholder</h2>
+				<h2>Searchbox:</h2>
+				<input class="search-box" data-bind="textInput: searchBox" />
 				<h2>Markers Placeholder</h2>
 				<ul>
+					<li data-bind="text: searchBox"></li>
 					<li>Marker 1</li>
 					<li>Marker 2</li>
 					<li>Marker 3</li>
@@ -60,18 +71,12 @@
 				</div>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-md-12">
-				<p>First name: <strong data-bind="text: firstName"></strong></p>
-				<p>Last name: <strong data-bind="text: lastName"></strong></p>
-
-				<p>First name: <input data-bind="value: firstName" /></p>
-				<p>Last name: <input data-bind="value: lastName" /></p>
-			</div>
-		</div>
+		
 	</div> <!-- Container -->
-	
 	<script type="text/javascript" src="js/app.js"></script>
+	<script type="text/javascript" src="js/google-maps.js"></script>
+	
+	
 </body>
 
 
