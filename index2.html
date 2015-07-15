@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>Neighborhood Map</title>
+            <link rel="stylesheet" href="css/style.css">
+            <link rel="stylesheet" href="css/bootstrap.min.css">
+            
+            <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSbdliIefdvhD6WK0qT4EfJGYsMl5KO18"></script>
+    <!-- <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>  -->       
+        </head>
+        <body>
+            <div class="container-fluid">
+                <div class="row" id="maprow">
+                    <div class="col-md-8 map-container">
+                        <div id="map-canvas">
+                        </div>
+                    </div>
+                </div>
+                <!-- Search form -->
+                <div class="row">
+                    <div class="col-md-10"></div>
+                    <div class="col-md-2 search-form">
+    <!--                     <form class="form-horizontal">
+                            <div class="form-group">
+                                <label for"searchKeywords">What are you looking for?</label>
+                                <input type="text" class="form-control" placeHolder="Search here"></input>
+                            </div>
+                            <div class="form-group">
+                                <label for"location">Location</label>
+                                <input type="text" class="form-control" placeHolder="location"></input>
+                            </div>
+                        </form> -->
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-10"></div>
+                    <div class="col-md-2 search-form">
+                        <!-- <span>Sushi places in SF</span> -->
+    <!-- <div data-role="main" class="ui-content">                     -->
+    <!-- <form class="ui-filterable"> -->
+      <!-- <input id="myFilter" data-type="search" data-bind="value: search, valueUpdate: 'afterkeydown'"> -->
+    <!-- </form>                     -->
+    <input class="search" type="text" placeholder="Filter Location" data-bind="textInput: filter"/>
+    <!-- <input class="search" type="search" placeholder="Fileter location" data-bind="textInput: filter, event: {keyup: search} autocomplete="off /> -->
+    <!--                     <ul class="list-view" data-bind="foreach: allLocations" id="location-list" data-role="listview" data-filter="true" data-input="#myFilter">
+                            <li data-bind="text: name, click: $root.clickHandler"></li>
+                        </ul> -->
+    <ul data-bind="foreach: filteredArray" class="list-view">
+        <li data-bind="text: name, click: $root.clickHandler"></li>
+    </ul>                    
+    <!-- </div>                     -->
+                    </div>
+                </div>
+            </div>
+    <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>         
+            <script type='text/javascript' src='js/knockout-3.3.0.js'></script>
+            <!-- // <script type="text/javascript" src="js/jquery-1.11.2.min.js"></script> -->
+            <script type='text/javascript' src='js/app2.js'></script>
+        </body>
+    </html>

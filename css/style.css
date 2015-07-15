@@ -1,14 +1,20 @@
-html, body, .container {
+html, body, .container, .container-fluid {
 	height: 100%;
 }
 
+li {
+    list-style: none;
+}
+
 #maprow, #maprow.col-md-8 {
-	height: 50%;
+	height: 80%;
 }
 
 .map-container {
 	height: 100%;
 	position: relative;
+    width: 95%;
+    max-width: 95%;
 }
 
 
@@ -21,6 +27,8 @@ html, body, .container {
     margin: 0;
     padding: 0;
 }
+
+
 
 .search-box {
     width: 95%;
