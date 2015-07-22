@@ -19,6 +19,7 @@
 		<div class="row">
 			<div class="col-md-12 text-right">
 				<h1>Garden City Elementary Schools</h1>
+				
 			</div>
 		</div>
 		<div class="row" id="maprow">
@@ -26,7 +27,7 @@
 				<input class="search" placeholder="Filter School" data-bind="textInput: filter" />
 				<button type="button" id="clearFilter">Clear Filter</button>
 				<h2>Schools:</h2>
-				<ul data-bind='foreach: filteredArray, visible: location.show'>
+				<ul data-bind='foreach: filteredArray'>
 					<li><span data-bind="text: name, click: $root.clickHandler"></span></li>
 				</ul>
 				<button type="button" id="mapReset">Reset map</button>
@@ -42,8 +43,7 @@
 	<script type="text/javascript" src="js/knockout-3.3.0.js"></script>
 	<script type="text/javascript" src="js/app.js"></script>
 	<!-- <script type="text/javascript" src="js/google-maps.js"></script> -->
-	
-	
+
 </body>
 
 
