@@ -7,7 +7,7 @@ var mapCenter = {
 var Model = [
 	{
 		name: 'Abe Hubert',
-		lat: 37.976399, 
+		lat: 37.976399,
 		lng: -100.873486,
 		show: true,
 		pin: "",
@@ -15,7 +15,7 @@ var Model = [
 	},
 	{
 		name: 'Alta Brown',
-		lat: 37.966638, 
+		lat: 37.966638,
 		lng: -100.860764,
 		show: true,
 		pin: "",
@@ -23,7 +23,7 @@ var Model = [
 	},
 	{
 		name: 'Buffalo Jones',
-		lat: 37.971979, 
+		lat: 37.971979,
 		lng: -100.882770,
 		show: true,
 		pin: "",
@@ -31,7 +31,7 @@ var Model = [
 	},
 	{
 		name: 'Edith Scheuerman',
-		lat: 37.981116, 
+		lat: 37.981116,
 		lng: -100.890927,
 		show: true,
 		pin: "",
@@ -39,7 +39,7 @@ var Model = [
 	},
 	{
 		name: 'Florence Wilson',
-		lat: 37.992231, 
+		lat: 37.992231,
 		lng: -100.851769,
 		show: true,
 		pin: "",
@@ -47,7 +47,7 @@ var Model = [
 	},
 	{
 		name: 'Georgia Matthews',
-		lat: 37.981884, 
+		lat: 37.981884,
 		lng: -100.868103,
 		show: true,
 		pin: "",
@@ -63,7 +63,7 @@ var Model = [
 	},
 	{
 		name: 'Jennie Barker',
-		lat: 38.032279, 
+		lat: 38.032279,
 		lng: -100.829881,
 		show: true,
 		pin: "",
@@ -79,7 +79,7 @@ var Model = [
 	},
 	{
 		name: 'Victor Ornelas',
-		lat: 37.967672, 
+		lat: 37.967672,
 		lng: -100.832166,
 		show: true,
 		pin: "",
@@ -98,15 +98,15 @@ var AppViewModel = function() {
     self.filteredArray = ko.computed(function() {
   		return ko.utils.arrayFilter(self.allLocations(), function(item) {
     		return item.name.toLowerCase().indexOf(self.filter().toLowerCase()) !== -1;
-		}); 
+		});
 	}, self);
-	
+
     //Populate the locations list
     self.allLocations(initializeList(Model));
     //Create map and display
     // if google map is not responding, alert the user
     self.map = ko.observable(initializeMap()) || alert("Google Maps is not available. Please try again later!");
-    
+
 	$( "#mapReset" ).click(function() {
 		mapZoomReset(self.map());
 	});
@@ -116,22 +116,24 @@ var AppViewModel = function() {
 	});
 
 
-    
-    
+
+
 
 
     //Populate markers
     //self.markers(mapMarkers(self.allLocations(), self.map(), self.markers()));
     mapMarkers(self.allLocations(), self.map());
-    
+
 
     //handle list clicks
     self.clickHandler = function(data) {
+			//console.log('clickHandler Data: ', data);
+			clearMarkers(self.filteredArray(), self.map());
         data.info.open(self.map(), data.pin);
         toggleBounce(data.pin);
         self.map().panTo(data, self.map());
       };
-    
+
 };
 
 function initializeList(locations) {
@@ -167,9 +169,10 @@ function mapMarkers (data, map) {
           title: datum.name
         });
 
-        console.log('DATUM:', datum);
+        //console.log('DATUM:', datum);
 
         google.maps.event.addListener(datum.pin, 'click', function () {
+					  clearMarkers(data, map);
             datum.info.open(map, datum.pin);
             toggleBounce(datum.pin);
             map.panTo(datum, map);
@@ -178,12 +181,21 @@ function mapMarkers (data, map) {
       });
     }
 
+function clearMarkers(data, map) {
+	//console.log('Data: ', data);
+	data.forEach(function (datum) {
+		if (datum.info) {
+			datum.info.close(map);
+		}
+	});
+}
+
 function mapZoomReset(map) {
 	map.setZoom(12);
 }
 
 function toggleBounce(marker) {
-    
+
     	if (marker.setAnimation() !== null) {
         	marker.setAnimation(null);
     	} else {
@@ -195,10 +207,10 @@ function toggleBounce(marker) {
 }
 
 function centerLocation(data, map) {
-	
+
 	map.panTo(new google.maps.LatLng(data.lat, data.lng));
 	map.setZoom(14);
-	
+
 }
 
 ko.applyBindings(new AppViewModel());
