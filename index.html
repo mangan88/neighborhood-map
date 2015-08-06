@@ -24,12 +24,16 @@
 		</div>
 		<div class="row" id="maprow">
 			<div class="col-md-3 text-right">
-				<input class="search" placeholder="Filter School" data-bind="textInput: filter" />
+				<input class="search" placeholder="Filter School" id="filter" data-bind="textInput: filter" />
+
+
 				<button type="button" id="clearFilter">Clear Filter</button>
 				<h2>Schools:</h2>
 				<ul data-bind='foreach: filteredArray'>
 					<li><span data-bind="text: name, click: $root.clickHandler"></span></li>
 				</ul>
+
+
 				<button type="button" id="mapReset">Reset map</button>
 			</div>
 			<div class="col-md-9 map-container">

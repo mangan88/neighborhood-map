@@ -3,6 +3,7 @@ var mapCenter = {
 	lat: 37.99564, lng: -100.850363
 };
 
+
 //List of initial map items
 var Model = [
 	{
@@ -95,24 +96,39 @@ var AppViewModel = function() {
     //self.markers = ko.observableArray([]);
     self.filter =  ko.observable("");
     self.allLocations  = ko.observableArray([]);
+		self.markers = ko.observableArray([]);
+		self.allLocations(initializeList(Model));
     self.filteredArray = ko.computed(function() {
+
   		return ko.utils.arrayFilter(self.allLocations(), function(item) {
     		return item.name.toLowerCase().indexOf(self.filter().toLowerCase()) !== -1;
-		});
-	}, self);
+			});
+		}, self);
+
+
+
+		self.filteredMarkers = ko.observableArray([]);
 
     //Populate the locations list
-    self.allLocations(initializeList(Model));
+
+
+
     //Create map and display
     // if google map is not responding, alert the user
     self.map = ko.observable(initializeMap()) || alert("Google Maps is not available. Please try again later!");
 
+
 	$( "#mapReset" ).click(function() {
 		mapZoomReset(self.map());
+		centerLocation(mapCenter, self.map());
 	});
 
 	$( "#clearFilter" ).click(function() {
 		self.filter("");
+	});
+
+	$( "#filter" ).click(function() {
+		clearMarkers(self.allLocations(), self.map());
 	});
 
 
@@ -121,9 +137,22 @@ var AppViewModel = function() {
 
 
     //Populate markers
-    //self.markers(mapMarkers(self.allLocations(), self.map(), self.markers()));
-    mapMarkers(self.allLocations(), self.map());
+		//filterMarkers(self.filteredArray(), self.allLocations(), self.map());
 
+    mapMarkers(self.allLocations(), self.map());
+		//mapMarkers(self.filteredArray(), self.map());
+
+		self.filterPins = ko.computed(function() {
+			var search = self.filter().toLowerCase();
+
+			return ko.utils.arrayFilter(self.allLocations(), function(datum) {
+				console.log(datum);
+				var match = datum.name.toLowerCase().indexOf(search) >= 0;
+
+				datum.pin.setVisible(match);
+				return match;
+			});
+		});
 
     //handle list clicks
     self.clickHandler = function(data) {
@@ -135,6 +164,7 @@ var AppViewModel = function() {
       };
 
 };
+
 
 function initializeList(locations) {
 	var placeList = ko.observableArray([]);
@@ -154,29 +184,29 @@ function initializeMap() {
 
 
 function mapMarkers (data, map) {
-
       data.forEach(function (datum) {
+					var latlng = new google.maps.LatLng(datum.lat, datum.lng);
 
-        var latlng = new google.maps.LatLng(datum.lat, datum.lng);
+	        datum.info = new google.maps.InfoWindow({
+	          content: datum.name
+	        });
 
-        datum.info = new google.maps.InfoWindow({
-          content: datum.name
-        });
+	        datum.pin = new google.maps.Marker({
+	          map: map,
+	          position: latlng,
+	          title: datum.name
+	        });
 
-        datum.pin = new google.maps.Marker({
-          map: map,
-          position: latlng,
-          title: datum.name
-        });
+	        //console.log('DATUM:', datum);
 
-        //console.log('DATUM:', datum);
+	        google.maps.event.addListener(datum.pin, 'click', function () {
+						  clearMarkers(data, map);
+	            datum.info.open(map, datum.pin);
+	            toggleBounce(datum.pin);
+	            map.panTo(datum, map);
+	        });
 
-        google.maps.event.addListener(datum.pin, 'click', function () {
-					  clearMarkers(data, map);
-            datum.info.open(map, datum.pin);
-            toggleBounce(datum.pin);
-            map.panTo(datum, map);
-        });
+
 
       });
     }
@@ -191,7 +221,7 @@ function clearMarkers(data, map) {
 }
 
 function mapZoomReset(map) {
-	map.setZoom(12);
+	map.setZoom(14);
 }
 
 function toggleBounce(marker) {
@@ -206,9 +236,9 @@ function toggleBounce(marker) {
     }
 }
 
-function centerLocation(data, map) {
+function centerLocation(datum, map) {
 
-	map.panTo(new google.maps.LatLng(data.lat, data.lng));
+	map.panTo(new google.maps.LatLng(datum.lat, datum.lng));
 	map.setZoom(14);
 
 }
