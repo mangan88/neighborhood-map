@@ -7,84 +7,84 @@ var mapCenter = {
 //List of initial map items
 var Model = [
 	{
-		name: 'Abe Hubert',
+		name: 'Abe Hubert Elementary School',
 		lat: 37.976399,
 		lng: -100.873486,
-		show: true,
 		pin: "",
-		info: ""
+		info: "",
+		whereIs: ""
 	},
 	{
-		name: 'Alta Brown',
+		name: 'Alta Brown Elementary School',
 		lat: 37.966638,
 		lng: -100.860764,
-		show: true,
 		pin: "",
-		info: ""
+		info: "",
+		whereIs: ""
 	},
 	{
-		name: 'Buffalo Jones',
+		name: 'Buffalo Jones Elementary School',
 		lat: 37.971979,
 		lng: -100.882770,
-		show: true,
 		pin: "",
-		info: ""
+		info: "",
+		whereIs: ""
 	},
 	{
-		name: 'Edith Scheuerman',
+		name: 'Edith Scheuerman Elementary School',
 		lat: 37.981116,
 		lng: -100.890927,
-		show: true,
 		pin: "",
-		info: ""
+		info: "",
+		whereIs: ""
 	},
 	{
-		name: 'Florence Wilson',
+		name: 'Florence Wilson Elementary School',
 		lat: 37.992231,
 		lng: -100.851769,
-		show: true,
 		pin: "",
-		info: ""
+		info: "",
+		whereIs: ""
 	},
 	{
-		name: 'Georgia Matthews',
+		name: 'Georgia Matthews Elementary School',
 		lat: 37.981884,
 		lng: -100.868103,
-		show: true,
 		pin: "",
-		info: ""
+		info: "",
+		whereIs: ""
 	},
 	{
-		name: 'Gertrude Walker',
+		name: 'Gertrude Walker Elementary School',
 		lat: 37.984997,
 		lng:-100.878380,
-		show: true,
 		pin: "",
-		info: ""
+		info: "",
+		whereIs: ""
 	},
 	{
-		name: 'Jennie Barker',
+		name: 'Jennie Barker Elementary School',
 		lat: 38.032279,
-		lng: -100.829881,
-		show: true,
+		lng: -100.829892,
 		pin: "",
-		info: ""
+		info: "",
+		whereIs: ""
 	},
 	{
-		name: 'Jennie Wilson',
+		name: 'Jennie Wilson Elementary School',
 		lat: 37.978813,
 		lng: -100.857267,
-		show: true,
 		pin: "",
-		info: ""
+		info: "",
+		whereIs: ""
 	},
 	{
-		name: 'Victor Ornelas',
+		name: 'Victor Ornelas Elementary School',
 		lat: 37.967672,
 		lng: -100.832166,
-		show: true,
 		pin: "",
-		info: ""
+		info: "",
+		whereIs: ""
 	}
 ];
 
@@ -99,23 +99,23 @@ var AppViewModel = function() {
 		self.markers = ko.observableArray([]);
 		self.allLocations(initializeList(Model));
     self.filteredArray = ko.computed(function() {
-
   		return ko.utils.arrayFilter(self.allLocations(), function(item) {
     		return item.name.toLowerCase().indexOf(self.filter().toLowerCase()) !== -1;
 			});
 		}, self);
+		self.map = ko.observable(initializeMap()) || alert("Google Maps is not available. Please try again later!");
+		console.log(self.allLocations());
+		fetchFourSquare(self.allLocations());
+		console.log(self.allLocations());
+		mapMarkers(self.allLocations(), self.map());
 
-
-
-		self.filteredMarkers = ko.observableArray([]);
 
     //Populate the locations list
 
 
-
     //Create map and display
     // if google map is not responding, alert the user
-    self.map = ko.observable(initializeMap()) || alert("Google Maps is not available. Please try again later!");
+
 
 
 	$( "#mapReset" ).click(function() {
@@ -139,14 +139,14 @@ var AppViewModel = function() {
     //Populate markers
 		//filterMarkers(self.filteredArray(), self.allLocations(), self.map());
 
-    mapMarkers(self.allLocations(), self.map());
+
 		//mapMarkers(self.filteredArray(), self.map());
 
 		self.filterPins = ko.computed(function() {
 			var search = self.filter().toLowerCase();
 
 			return ko.utils.arrayFilter(self.allLocations(), function(datum) {
-				console.log(datum);
+
 				var match = datum.name.toLowerCase().indexOf(search) >= 0;
 
 				datum.pin.setVisible(match);
@@ -165,6 +165,34 @@ var AppViewModel = function() {
 
 };
 
+function fetchFourSquare(data) {
+	data.forEach(function (datum) {
+		//console.log(datum)
+		var fetchLatLng = datum.lat + ',' + datum.lng;
+		var fetchString = 'https://api.foursquare.com/v2/venues/search' +
+		'?client_id=240ZFEBHJWUHIUXEZPPGRNXIS11DBD43SZEPFEDBA3YEDUPU' +
+		'&client_secret=H2GRQD0C0JVJ5KXIS2B01CNIQODP2SRYMHRDXZZ4YNVIPECH' +
+		'&v=20130815' +
+		'&ll=' + fetchLatLng +
+		'&query=' + datum.name +
+		'&radius=1100';
+
+		$.getJSON(fetchString, function( object ){
+			$.each(object.response.venues, function(i,venues){
+				datum.whereIs=venues.location.address;
+
+
+
+
+			});
+
+		});
+
+	});
+
+
+
+}
 
 function initializeList(locations) {
 	var placeList = ko.observableArray([]);
@@ -185,10 +213,12 @@ function initializeMap() {
 
 function mapMarkers (data, map) {
       data.forEach(function (datum) {
+				console.log(datum);
+				console.log(datum.whereIs);
 					var latlng = new google.maps.LatLng(datum.lat, datum.lng);
-
+					var contentString = '<h3>' + datum.name + '</h3>' + '<p>' + datum.whereIs + '</p>';
 	        datum.info = new google.maps.InfoWindow({
-	          content: datum.name
+	          content: contentString
 	        });
 
 	        datum.pin = new google.maps.Marker({
