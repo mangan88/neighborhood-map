@@ -165,7 +165,8 @@ function fetchFourSquare(data) {
 			if(object.meta.code == '200'){
 				$.each(object.response.venues, function(i,venues){
 						datum.whereIs=venues.location.address;
-						datum.info.setContent('<h3>' + datum.name + '</h3>' + '<p>' + datum.whereIs + '</p>');
+						datum.info.setContent('<h3>' + datum.name + '</h3>' + '<p>' +
+						datum.whereIs + '</p>');
 					});
 			}
 		});
