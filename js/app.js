@@ -94,36 +94,28 @@ var AppViewModel = function() {
 	var self = this;
 
 	//Set up all variables
-    self.filter =  ko.observable("");
-    self.allLocations  = ko.observableArray([]);
+		self.filter =	ko.observable("");
+		self.allLocations	= ko.observableArray([]);
 		self.markers = ko.observableArray([]);
 		self.allLocations(initializeList(Model));
-    self.filteredArray = ko.computed(function() {
-  		return ko.utils.arrayFilter(self.allLocations(), function(item) {
-    		return item.name.toLowerCase().indexOf(self.filter().toLowerCase()) !== -1;
+		self.filteredArray = ko.computed(function() {
+			return ko.utils.arrayFilter(self.allLocations(), function(item) {
+				return item.name.toLowerCase().indexOf(self.filter().toLowerCase()) !== -1;
 			});
 		}, self);
-		//Check if google type exists
-		if (!google) {
-		 			 alert("Google Maps is not available. Please try again later!");
-		 } else {
 			self.map = ko.observable(initializeMap());
-	 		console.log('mapStatus: ' + mapStatus);
 
 	 		fetchFourSquare(self.allLocations());
 	 		mapMarkers(self.allLocations(), self.map());
 			self.filterPins = ko.computed(function() {
 				var search = self.filter().toLowerCase();
-
 				return ko.utils.arrayFilter(self.allLocations(), function(datum) {
-
 					var match = datum.name.toLowerCase().indexOf(search) >= 0;
-
 					datum.pin.setVisible(match);
 					return match;
 				});
 			});
-		 }
+
 
 
 	$( "#mapReset" ).click(function() {
@@ -139,16 +131,62 @@ var AppViewModel = function() {
 		clearMarkers(self.allLocations(), self.map());
 	});
 
-    //handle list clicks
-    self.clickHandler = function(data) {
+
+	//Enable Slidebar, set auto-open and close based on device width
+	(function($) {
+		$(document).ready(function() {
+			if ($(window).width() > 900) {
+				$.slidebars({
+					siteClose: false
+				});
+				$.slidebars.toggle('left');
+
+			} else {
+					$.slidebars();
+			}
+		});
+	}) (jQuery);
+
+
+
+		//initialize list of locations
+		function initializeList(locations) {
+			var placeList = ko.observableArray([]);
+			for (var place in locations) {
+					placeList.push(locations[place]);
+				}
+				return placeList();
+		}
+
+		//initialize map. Look for unreachable map server and alert user
+		function initializeMap() {
+			try {
+				var mapOptions = {
+					center: new google.maps.LatLng(mapCenter.lat, mapCenter.lng),
+					zoom: 12
+				};
+				return new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+
+			}
+			catch(err) {
+				alert("No map available");
+			}
+
+		}
+
+		//handle list clicks
+		self.clickHandler = function(data) {
 			clearMarkers(self.filteredArray(), self.map());
-        data.info.open(self.map(), data.pin);
-        toggleBounce(data.pin);
-        self.map().panTo(data, self.map());
-      };
+				data.info.open(self.map(), data.pin);
+				toggleBounce(data.pin);
+				self.map().panTo(data, self.map());
+				if ($.slidebars.active('left') && ($(window).width() < 900)) {
+					$.slidebars.close();
+				}
 
-};
+		};
 
+		//call to foursquare for address data
 function fetchFourSquare(data) {
 	data.forEach(function (datum) {
 		var fetchLatLng = datum.lat + ',' + datum.lng;
@@ -173,45 +211,31 @@ function fetchFourSquare(data) {
 	});
 }
 
-function initializeList(locations) {
-	var placeList = ko.observableArray([]);
-	for (var place in locations) {
-    	placeList.push(locations[place]);
-    }
-    return placeList();
-}
 
-function initializeMap() {
-		var mapOptions = {
-      center: new google.maps.LatLng(mapCenter.lat, mapCenter.lng),
-      zoom: 12
-    };
-    return new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-}
-
+//populate mapmarkers, info windows, click handlers
 function mapMarkers (data, map) {
 			//Loop through and create an infoWindow, pin, and click handler for each location
-      data.forEach(function (datum) {
+			data.forEach(function (datum) {
 					var latlng = new google.maps.LatLng(datum.lat, datum.lng);
 					var contentString = '<h3>' + datum.name + '</h3>' + '<p>' + datum.whereIs + '</p>';
-	        datum.info = new google.maps.InfoWindow({
-	          content: contentString
-	        });
+					datum.info = new google.maps.InfoWindow({
+						content: contentString
+					});
 
-	        datum.pin = new google.maps.Marker({
-	          map: map,
-	          position: latlng,
-	          title: datum.name
-	        });
+					datum.pin = new google.maps.Marker({
+						map: map,
+						position: latlng,
+						title: datum.name
+					});
 
-	        google.maps.event.addListener(datum.pin, 'click', function () {
-						  clearMarkers(data, map);
-	            datum.info.open(map, datum.pin);
-	            toggleBounce(datum.pin);
-	            map.panTo(datum, map);
-	        });
-      });
-    }
+					google.maps.event.addListener(datum.pin, 'click', function () {
+							clearMarkers(data, map);
+							datum.info.open(map, datum.pin);
+							toggleBounce(datum.pin);
+							map.panTo(datum, map);
+					});
+			});
+		}
 
 function clearMarkers(data, map) {
 	data.forEach(function (datum) {
@@ -222,23 +246,23 @@ function clearMarkers(data, map) {
 }
 
 function mapZoomReset(map) {
-	map.setZoom(14);
+	map.setZoom(12);
 }
 
 function toggleBounce(marker) {
-    	if (marker.setAnimation() !== null) {
-        	marker.setAnimation(null);
-    	} else {
-        	marker.setAnimation(google.maps.Animation.BOUNCE);
-        	setTimeout(function() {
-        	marker.setAnimation(null);
-        }, 600);
-    }
+			if (marker.setAnimation() !== null) {
+					marker.setAnimation(null);
+			} else {
+					marker.setAnimation(google.maps.Animation.BOUNCE);
+					setTimeout(function() {
+					marker.setAnimation(null);
+				}, 600);
+		}
 }
 
 function centerLocation(datum, map) {
 	map.panTo(new google.maps.LatLng(datum.lat, datum.lng));
-	map.setZoom(14);
+	map.setZoom(12);
 }
-
+};
 ko.applyBindings(new AppViewModel());
