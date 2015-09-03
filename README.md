@@ -1,6 +1,9 @@
 # neighborhood-map
 Udacity Front-End Developer Nanodegree - Project 5
 
+# To run:
+Simply open index.html in any modern browser and enjoy the app!
+
 # Slidebar
 Site: http://plugins.adchsm.me/slidebars/
 Used free with permission under MIT license

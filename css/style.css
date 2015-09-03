@@ -1,33 +1,31 @@
-html, body, .container, .container-fluid, #map-canvas {
-	height: 100%;
+html,
+body,
+.container,
+.container-fluid,
+#map-canvas {
+  height: 100%;
 }
 
 #header {
-	text-align: center;
-	top: 0px;
-	width: 100%;
-	max-width: 100%;
-	margin: 0 0 10px 0;
-}
-#content {
-
-
+  text-align: center;
+  top: 0px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 0 10px 0;
 }
 
 li {
-	color: #ccc;
-	list-style-type: none
+  color: #ccc;
+  list-style-type: none;
 }
 
-
-
 #map-canvas {
-    position: relative!important;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    margin: 0;
-    padding: 0;
-	  z-index: 1;
-		min-height: 400px;
+  position: relative!important;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  z-index: 1;
+  min-height: 400px;
 }
